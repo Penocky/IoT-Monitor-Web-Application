@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <title>Car Environment Monitor</title>
+    <script src="javascripts/jquery-2.1.4.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="javascripts/Chart.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="javascripts/index.js" type="text/javascript" charset="utf-8"></script>
+    <script src="javascripts/index1.js" type="text/javascript" charset="utf-8"></script>
+
+    <link href="stylesheets/style.css" rel="stylesheet" />
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <style>
+  body {
+      font: 20px Montserrat, sans-serif;
+      line-height: 1.8;
+      color: #ffedcc;
+  }
+  p {font-size: 16px;}
+  .margin {margin-bottom: 45px;}
+  .bg-1 {
+      background-color: #ffedcc;
+      color: #ffffff;
+  }
+  .bg-2 {
+      background-color: #4affbb;
+      color: #ffffff;
+  }
+
+    .bg-4 {
+      background-color: #474446;
+      color: #ffffff;
+  }
+
+  .container-fluid {
+      padding-top: 70px;
+      padding-bottom: 70px;
+  }
+  .navbar {
+      padding-top: 15px;
+      padding-bottom: 15px;
+      border: 0;
+      border-radius: 0;
+      margin-bottom: 0;
+      font-size: 12px;
+      letter-spacing: 5px;
+
+  }
+  .navbar-nav  li a:hover {
+      color: #1abc9c !important;
+  }
+  </style>
+
+</head>
+
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-default">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" >Car Environment Monitor</a>
+    </div>
+
+  </div>
+</nav>
+
+<!-- First Container -->
+<div class="container-fluid bg-1 text-center">
+  <canvas id="myChart" width="400" height="150"></canvas>
+
+
+
+</div>
+
+<!-- Second Container -->
+<div class="container-fluid bg-2 text-center">
+  <h3 >Car Environment Condition</h3>
+  <p id="demo"></p>
+  <p id="demo1"></p>
+
+<script>
+var T = 80;
+var RH = 0.5;
+var HI = (-42379 + 2049*T + 10143*RH - 225*T*RH - 6.83*T*T - 54.8*RH*RH)/1000;
+var T ;
+T = (HI - 32) / (9/5);
+
+var ws = new WebSocket('wss://' + location.host);
+  ws.onopen = function () {
+    console.log('Successfully connect WebSocket');
+  }
+  ws.onmessage = function (message) {
+    console.log('receive message' + message.data);
+
+      var obj = JSON.parse(message.data);
+      if(!obj.time || !obj.temperature) {
+        return;
+      }
+      var tep = obj.temperature;
+      var air = obj.airquality;
+      var airday = 0;
+      if (air > 60){
+        airday+=1;
+      }
+
+var twilio = require('twilio');
+var client = new twilio('TWILIO_ACCOUNT_SID', 'TWILIO_AUTH_TOKEN');
+
+client.messages.create({
+  to: 'YOUR_NUMBER',
+  from: 'YOUR_TWILIO_NUMBER',
+  body: 'Ahoy from Twilio!'
+});
+
+
+
+if (HI >20 && HI < 30){
+document.getElementById("demo").innerHTML = "The condition is just right";}
+else if (HI < 20){
+document.getElementById("demo").innerHTML = "It’s too cold. Turn on the heat!";
+}
+else if (HI > 35 ){
+document.getElementById("demo").innerHTML = "It’s too hot. Turn on the air conditioner!";
+}
+else if (air > 40 && air < 50){
+document.getElementById("demo").innerHTML = "The air is not fresh! Open the Window!!";
+}
+else if (air >50 && air < 60){
+	document.getElementById("demo").innerHTML = "The air is bad! Open the Window!!";
+}
+if (air > 50){
+    client.sendMessage();
+}
+if (tep > 40){
+    client.sendMessage();
+}
+
+if (airday > 5){
+document.getElementById("demo1").innerHTML = "Air is not good for a while. You should check the vehicle.";
+}
+}
+
+</script>
+<canvas id="myChart1" width="400" height="150"></canvas>
+</div>
+
+
+<!-- Footer -->
+<footer class="container-fluid bg-4 text-center">
+  <p>Made By TEAM 34</p>
+</footer>
+
+</body>
+
+
+
+</html>
